@@ -51,6 +51,7 @@ public class Checkers implements Game<Checkers.Moves<Square, Square>, Mark> {
             System.out.println("Board after: " + board);
         }
         printBoard(board);
+        System.out.println("start");
     }
 
     public void undo(Moves<Square,Square> move, boolean isMax){
@@ -90,6 +91,7 @@ public class Checkers implements Game<Checkers.Moves<Square, Square>, Mark> {
 
     private boolean inRange(int number1, int number2,int upperbound, int lowerbound){
         return (upperbound > number1 && lowerbound <= number1) && (number2 >= lowerbound && number2 < upperbound);
+
     }
 
     private List<Moves<Square, Square>> jumpWalkCheck(Square square, int jumpY, int jumpX, int walkY, int walkX, Map<Square, Mark> currentBoard, Mark mark) {
@@ -137,18 +139,22 @@ public class Checkers implements Game<Checkers.Moves<Square, Square>, Mark> {
         //Going to have to include bit where it limits the amount of rows
         //Needs to return moves
         List<Moves<Square, Square>> result = new ArrayList<>();
+        System.out.println("get all remaining moves");
         for (int y = 0; y < BOARD_SIZE; y++) {
             for (int x = 0; x < BOARD_SIZE; x++) {
                 Square square = new Square(y, x);
-
+                //the two ifs prevent walking off the board
+                if (y < BOARD_SIZE -2){ 
                 if (currentBoard.get(square) == Mark.R){
                     Square square1 = new Square(y, x);
-
+                    if(x > 1){
                     int jumpY = y + 2; int jumpX = x - 2; int walkY = y + 1; int walkX = x - 1;//lower left
                     result.addAll(jumpWalkCheck(square1, jumpY, jumpX, walkY, walkX, currentBoard, Mark.B));
-
-                    jumpY = y + 2; jumpX = x + 2; walkY = y + 1; walkX = x + 1;//lower right
+                    }
+                    if (x < BOARD_SIZE - 2){
+                    int jumpY = y + 2; int jumpX = x + 2; int walkY = y + 1; int walkX = x + 1;//lower right
                     result.addAll(jumpWalkCheck(square1, jumpY, jumpX, walkY, walkX, currentBoard, Mark.B));
+                    }
 //
 //                    jumpY = y - 2; jumpX = x - 2; walkY = y + 1; walkX = x - 1;//upper left,                  R can't go up
 //                    result.addAll(jumpWalkCheck(square, jumpY, jumpX, walkY, walkX, currentBoard, Mark.R));
@@ -156,7 +162,9 @@ public class Checkers implements Game<Checkers.Moves<Square, Square>, Mark> {
 //                    jumpY = y - 2; jumpX = x + 2; walkY = y + 1; walkX = x + 1;//upper right
 //                    result.addAll(jumpWalkCheck(square, jumpY, jumpX, walkY, walkX, currentBoard, Mark.R));
 
-                }
+                }}
+                if (y > 1){// when peices get to the bottum they cannot jump out of bounds now but walk and jump need seperate functions because now we wont walk everywhere we could but its neccassary for jump!
+                    
                 if (board.get(square) == Mark.B){
                     Square square2 = new Square(y, x);
 //                    int jumpY = y + 2; int jumpX = x - 2; int walkY = y + 1; int walkX = x - 1;//lower left,   B cant go down
@@ -164,16 +172,18 @@ public class Checkers implements Game<Checkers.Moves<Square, Square>, Mark> {
 //
 //                    jumpY = y + 2; jumpX = x + 2; walkY = y + 1; walkX = x + 1;//lower right
 //                    result.addAll(jumpWalkCheck(square, jumpY, jumpX, walkY, walkX, currentBoard, Mark.B));
-
+                    if(x > 1){ // only does jumps in the left so it cannot go out of bounds
                     int jumpY = y - 2; int jumpX = x - 2; int walkY = y + 1; int walkX = x - 1;//upper left
                     result.addAll(jumpWalkCheck(square2, jumpY, jumpX, walkY, walkX, board, Mark.B));
-
-                    jumpY = y - 2; jumpX = x + 2; walkY = y + 1; walkX = x + 1;//upper right
+                    }
+                    if (x < BOARD_SIZE - 2){
+                    int jumpY = y - 2; int jumpX = x + 2; int walkY = y + 1; int walkX = x + 1;//upper right
                     result.addAll(jumpWalkCheck(square2, jumpY, jumpX, walkY, walkX, board, Mark.B));
-
+                    }
                 }
 
             }
+        }
         }
         System.out.println("Result: " + result);
         return result;
@@ -188,18 +198,31 @@ public class Checkers implements Game<Checkers.Moves<Square, Square>, Mark> {
         //7x7, 3 occupied, 1 empty
         //9x9, 3 occupied, 3 empty
         //11x11 3 occupied, 5 empty
+        for (int BOARD_SIZE = 3; BOARD_SIZE < 12; BOARD_SIZE+=2){
+        
         if (BOARD_SIZE == 3) { //3x3
             for (int row = 0; row < BOARD_SIZE; row++) {
                 for (int col = 0; col < BOARD_SIZE; col++) {
-                    if ((row == 0) && ((col == 0) || (col == 2))) {
+                    //if ((row == 0) && ((col == 0) || (col == 2))) 
+                    if ((BOARD_SIZE > 5 && (row == 0 || row == 1)) || row == 0)
+                    {
                         Square square = new Square(row , col);
                         board.put(square, Mark.R);
-                    } else if ((row == 2) && ((col == 0) || (col == 2))) {
+                    } //else if ((row == 2) && ((col == 0) || (col == 2))) 
+                    if ((BOARD_SIZE > 5 && (row == BOARD_SIZE-2 || row ==  BOARD_SIZE - 1))|| row == BOARD_SIZE-1)
+                    {
                         Square square = new Square(row , col );
                         board.put(square, Mark.B);
                     }
                 }
             }
+        }  
+    }   
+    printBoard(board); 
+    System.out.println("Board Game was implemented or previously started above with size = "+ BOARD_SIZE); // Guys we are cooked where in the what can we do if we have no way to see the initial board I doubt it was a smart idea getting further without printing the intitial board and ability to print moves, So how can the code run and make a board without printing it first does each peice start moving as it is built this would be bad as it would start games prematurely
+         //Extra parenthesis due to comment
+    }
+        
 //          COMMENTED OUT BECAUSE WE NEED TO GET 3X3 TO WORK FIRST
 //        }if (BOARD_SIZE == 5){ //5x5
 //            for (int row = 1; row <= BOARD_SIZE; row++) {
@@ -227,19 +250,19 @@ public class Checkers implements Game<Checkers.Moves<Square, Square>, Mark> {
 //            }
 //        }
 //    }
-        }           //Extra parenthesis due to comment
-    }
+      
 
     public void printBoard(Map<Square,Mark> currentBoard){
         String RESET = "\u001B[0m";
         String RED = "\u001B[31m";
         String WHITE = "\u001B[37m";
 
-        System.out.println("  ");
-        for (int col = 0; col < BOARD_SIZE; col++){
-            System.out.print(" " + col + " ");
+        System.out.printf("    "); // better print for the top index to show! - its just for show has no effect to the code what so ever!
+        for (int i= 0; i < BOARD_SIZE; i++){
+            System.out.print(i + "   ");
         }
         System.out.println();
+        
         for (int i = 0; i < BOARD_SIZE; i++){
             System.out.print(" " + i + " ");
 
