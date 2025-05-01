@@ -148,6 +148,7 @@ public class Checkers implements Game<Checkers.Moves<Square, Square>, Mark> {
                 if (currentBoard.get(square) == Mark.R){
                     Square square1 = new Square(y, x);
                     if(x > 1){
+                    if (board.get())
                     int jumpY = y + 2; int jumpX = x - 2; int walkY = y + 1; int walkX = x - 1;//lower left
                     result.addAll(jumpWalkCheck(square1, jumpY, jumpX, walkY, walkX, currentBoard, Mark.B));
                     }
@@ -164,7 +165,7 @@ public class Checkers implements Game<Checkers.Moves<Square, Square>, Mark> {
 
                 }}
                 if (y > 1){// when peices get to the bottum they cannot jump out of bounds now but walk and jump need seperate functions because now we wont walk everywhere we could but its neccassary for jump!
-                    
+
                 if (board.get(square) == Mark.B){
                     Square square2 = new Square(y, x);
 //                    int jumpY = y + 2; int jumpX = x - 2; int walkY = y + 1; int walkX = x - 1;//lower left,   B cant go down
@@ -219,7 +220,7 @@ public class Checkers implements Game<Checkers.Moves<Square, Square>, Mark> {
         }  
     }   
     printBoard(board); 
-    System.out.println("Board Game was implemented or previously started above with size = "+ BOARD_SIZE); // Guys we are cooked where in the what can we do if we have no way to see the initial board I doubt it was a smart idea getting further without printing the intitial board and ability to print moves, So how can the code run and make a board without printing it first does each peice start moving as it is built this would be bad as it would start games prematurely
+    System.out.println("Board Game was implemented or previously started above with size = "+ BOARD_SIZE);
          //Extra parenthesis due to comment
     }
         
